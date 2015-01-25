@@ -42,8 +42,13 @@ Yeoman has a heart of gold. He's a person with feelings and opinions, but he's v
 If you'd like to get to know Yeoman better and meet some of his friends, [Grunt](http://gruntjs.com) and [Bower](http://bower.io), check out the complete [Getting Started Guide](https://github.com/yeoman/yeoman/wiki/Getting-Started).
 
 
-## Yeoman VS Gulp
+## Yeoman由三剑客Grunt、Bower、Yo组成
 
+目前与Grunt构建工具分庭抗礼的是Gulp
+
+扯些别的，在generator-avalon中我使用了browserify完成对oniui的打包工作，在我看来它的配置比requirejs要方便的多，无怪乎有人说：
+
+> Grunt and RequireJS are out, it’s all about Gulp and Browserify now
 
 
 ## API description
