@@ -170,8 +170,8 @@ generator-generator最终依赖的是yeoman-generator，以下对yeoman-generato
 
 yeoman-generator依赖于fs、util、path、events、assert、lodash、async、findup-sync、nopt、file-utils、through2、user-home、util/engines、util/conflicter、utl/storage、util/prompt-suggestion、class-extend模块，所以制作过程中有任何疑问可以直接去了解这些module的api
 
-```
- * The `Base` class provides the common API shared by all generators.
+```javascript
+ /* The `Base` class provides the common API shared by all generators.
  * It define options, arguments, hooks, file, prompt, log, API, etc.
  *
  * It mixes on its prototype all methods you'll find in the `actions/` mixins.
@@ -222,6 +222,7 @@ yeoman-generator依赖于fs、util、path、events、assert、lodash、async、f
  *     this.fs.write('var foo = 1;', this.destinationPath('index.js'));
  *   }
  * });
+ */
 
  // 每个generator对象的options对象包含的有用信息：
  options: {
@@ -243,7 +244,7 @@ yeoman-generator依赖于fs、util、path、events、assert、lodash、async、f
 ```
 yo todos sync --coffee
 ```
-在initializing方法中this.log(arguments)打印的结果是：{0: sync},所以要获取命令行参数还是需要this.args来得到我们预期的结果['aaa'],至于选项coffee可以通过this.options.coffee来确定我们要求使用coffee选项，当然只写--coffee默认得到coffee的值为true，那如果我们要给选项赋值，就需要___yo todos --test-framework=jasmin___ 这样this.options['test-framework']的值就是jasmin而不是true了
+在initializing方法中this.log(arguments)打印的结果是：{0: sync},所以要获取命令行参数还是需要this.args(this.arguments)来得到我们预期的结果['aaa'],至于选项coffee可以通过this.options.coffee来确定我们要求使用coffee选项，当然只写--coffee默认得到coffee的值为true，那如果我们要给选项赋值，就需要___yo todos --test-framework=jasmin___ 这样this.options['test-framework']的值就是jasmin而不是true了
 
 ### 每个generator对象都会有的关键属性的实现细节：
 ```javascript
@@ -364,6 +365,11 @@ Base.prototype.hookFor = function hookFor(name, config) {
   return this;
 };
 ```
+调用hookFor方法必须将其放在
+constructor方法中执行才有效。并且hookFor会自动将args带过去，当然如果显示的定义了args则使用显示定义的args初始化generator hook。而composeWith则不会自动将args带过去，所以compose的generator需要的参数或者选项只能显示的定义在options上
+
+
+### composeWith
 
 ```javascript
 /**
