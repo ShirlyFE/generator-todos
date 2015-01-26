@@ -42,7 +42,10 @@ Yeoman has a heart of gold. He's a person with feelings and opinions, but he's v
 If you'd like to get to know Yeoman better and meet some of his friends, [Grunt](http://gruntjs.com) and [Bower](http://bower.io), check out the complete [Getting Started Guide](https://github.com/yeoman/yeoman/wiki/Getting-Started).
 
 
-## Yeoman由三剑客：构建(Grunt,Gulp)工具、包管理工具(Bower, npm)、脚手架工具(Yo)组成
+## Yeoman三剑客：构建(Grunt,Gulp)工具、包管理工具(Bower, npm)、脚手架工具(Yo)
+
+YO是yeoman的核心工具，也就是项目生产环境和编译环境生成工具，Bower是Web开发的包管理器，概念上类似npm，npm专注于nodeJs模块，而bower专注于CSS、JavaScript、图像等前端相关内容的管理。可以说：效率和规范是yeoman的核心诉求，旨在为开发者提供一系列健壮的工具、程序库和工作流
+
 
 目前与Grunt构建工具分庭抗礼的是Gulp,而Gulp的目标是取代Grunt
 
@@ -219,7 +222,28 @@ yeoman-generator依赖于fs、util、path、events、assert、lodash、async、f
  *     this.fs.write('var foo = 1;', this.destinationPath('index.js'));
  *   }
  * });
+
+ // 每个generator对象的options对象包含的有用信息：
+ options: {
+    env: { // 当前generator的执行环境
+        cwd: 'c:\\Users\lili.tian\Desktop\demo\todosProject'，
+        runLoop: {
+            queueName: [],
+            running: true
+        },
+        lookups: ['.', 'generator', 'lib/generator'],
+        arguments: [],
+        options: {}
+    },
+    resolved: 'c:\\Users\...\generator-todos\app\index.js',
+    namespace: 'todos:app'
+ }
 ```
+在generator的initializing方法中，其收到的参数是参数组成的对象，比如执行命令：
+```
+yo todos sync --coffee
+```
+在initializing方法中this.log(arguments)打印的结果是：{0: sync},所以要获取命令行参数还是需要this.args来得到我们预期的结果['aaa'],至于选项coffee可以通过this.options.coffee来确定我们要求使用coffee选项，当然只写--coffee默认得到coffee的值为true，那如果我们要给选项赋值，就需要___yo todos --test-framework=jasmin___ 这样this.options['test-framework']的值就是jasmin而不是true了
 
 ### 每个generator对象都会有的关键属性的实现细节：
 ```javascript
@@ -253,7 +277,9 @@ yeoman-generator依赖于fs、util、path、events、assert、lodash、async、f
 }
 ```
 
-> process.chdir(dirPath) --- 改变当前执行目录为dirPath
+```javascript
+process.chdir(dirPath) --- 改变当前执行目录为dirPath
+```
 
 ### gruntfile的读取操作
 
@@ -317,9 +343,7 @@ Object.defineProperty(this, 'gruntfile', {
  * @param {String} name
  * @param {Object} config
  */
-```
 
-```javascript
 Base.prototype.hookFor = function hookFor(name, config) {
   config = config || {};
 
@@ -382,6 +406,26 @@ Base.prototype.composeWith = function composeWith(namespace, options, settings) 
   return this;
 };
 ```
+
+在generator的制作中可以使用__dirname，__dirname对应的是当前generator的index.js坐在的目录。比如这里的c:\\users\lili.tian\...\generator-todos\app
+
+## generator制作步骤
+
+1. npm install -g generator-generator
+2. 建立一个目录，命名必须为generator-____,下划线是你的generator的真实名字
+3. cd到你的generator目录，yo generator命令生成最基本的generator
+4. npm link命令使得本地全局可以使用你的generator，当然像使用其他generator一样
+5. 修改app下的index.js(generator的入口文件)，和templates下面的内容形成自己想要的generator功能
+6. 建立子generator，yo generator:subgenerator "post"命令会创建post/index.js 和post/templates/somefile.js两个文件，你可以像在generator中编辑index.js一样编辑你自己的子generator。然后就可以像这样使用：yo blog:post "hey,buddy"
+
+
+## yeoman使用遇到问题及解决办法
+
+在用bower安装components时，总是会报错: >>> bower ECMDERR Failed to execute "git ls-remote --tags --heads git://github.com/angular-ui/ui-router.git", exit code of #128
+解决方案：change the protocol from git to https, it works >>> git ls-remote --tags --heads https://github.com/angular-ui/ui-router.git
+使用此命令实现彻底修改git为https：git config --global url."https://".insteadOf git://
+
+
 
 ## yeoman 参考资料
 
