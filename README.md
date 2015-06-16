@@ -41,6 +41,30 @@ Yeoman has a heart of gold. He's a person with feelings and opinions, but he's v
 
 If you'd like to get to know Yeoman better and meet some of his friends, [Grunt](http://gruntjs.com) and [Bower](http://bower.io), check out the complete [Getting Started Guide](https://github.com/yeoman/yeoman/wiki/Getting-Started).
 
+## 为什么选择yeoman
+
+当你启动一个项目时需要做出以下考虑：
+
+1. 项目目录该如何规划？
+2. 使用什么类库来支撑系统开发？
+3. 生产环境如何搭建（比如很多前端的生产环境是基于php，也有基于NodeJs）
+4. 编译环境如何搭建（编译环境其实应该归到生产环境中，但前端很多人使用coffeescript/less/sass等，所以需要编译环境）
+5. 单元测试环境如何搭建？
+6. 调试环境如何搭建（本地代理远程assets等）
+7. 开发完毕后打包部署如何处理？
+
+当想清楚上述问题之后，结合下面列出的yeoman的特点，可以让我们快速的将上述思考过程落到实处
+
+* 快速创建骨架应用程序——使用可自定义的模板、AMD（通过RequireJS）以及其他工具轻松地创建新项目的骨架。
+* 自动编译CoffeeScrip和Compass——在做出变更的时候，Yeoman的LiveReload监视进程会自动编译源文件，并刷新浏览器，而不需要你手动执行。
+* 自动完善你的脚本——所有脚本都会自动针对jshint运行，从而确保它们遵循语言的最佳实践。
+* 内建的预览服务器——你不需要启动自己的HTTP服务器。内建的服务器用一条命令就可以启动。
+* 非常棒的图像优化——Yeoman使用OptPNG和JPEGTran对所有图像做了优化，从而你的用户可以花费更少时间下载资源，有更多时间来使用你的应用程序。
+* 生成AppCache清单——Yeoman会为你生成应用程序缓存的清单，你只需要构建项目就好。
+* “杀手级”的构建过程——你所做的工作不仅被精简到最少，让你更加专注，而且Yeoman还会优化所有图像文件和HTML文件、编译你的CoffeeScript和Compass文件、生成应用程序的缓存清单，如果你使用AMD，那么它还会通过r.js来传递这些模块。这会为你节省大量工作。
+* 集成的包管理——Yeoman让你可以通过命令行（例如，yeoman搜索查询）轻松地查找新的包，安装并保持更新，而不需要你打开浏览器。
+* 对ES6模块语法的支持——你可以使用最新的ECMAScript 6模块语法来编写模块。这还是一种实验性的特性，它会被转换成eS5，从而你可以在所有流行的浏览器中使用编写的代码。
+* PhantomJS单元测试——你可以通过PhantomJS轻松地运行单元测试。当你创建新的应用程序的时候，它还会为你自动创建测试内容的骨架。
 
 ## Yeoman三剑客：构建(Grunt,Gulp)工具、包管理工具(Bower, npm)、脚手架工具(Yo)
 
@@ -415,6 +439,8 @@ Base.prototype.composeWith = function composeWith(namespace, options, settings) 
 
 在generator的制作中可以使用__dirname，__dirname对应的是当前generator的index.js坐在的目录。比如这里的c:\\users\lili.tian\...\generator-todos\app
 
+generator-是一种工程模板,它让我们在项目开始阶段，能够基于现有的模板框架（例如：HTML5 Bolierplate、Twitter Bootstrap）进行项目初始化的快速构建，下面看下怎样制作一个符合自己需求的generator
+
 ## generator制作步骤
 
 1. npm install -g generator-generator
@@ -435,10 +461,37 @@ Base.prototype.composeWith = function composeWith(namespace, options, settings) 
 
 ## yeoman 参考资料
 
-[yeoman 基于的文件系统](https://github.com/sboudrias/mem-fs-editor)
-[制作generator时所有可用的API](https://travis-ci.org/yeoman/generator/builds/45718180)
-[build your own yeoman generator](http://code.tutsplus.com/tutorials/build-your-own-yeoman-generator--cms-20040)
+* [yeoman 基于的文件系统](https://github.com/sboudrias/mem-fs-editor)
+* [制作generator时所有可用的API](https://travis-ci.org/yeoman/generator/builds/45718180)
+* [build your own yeoman generator](http://code.tutsplus.com/tutorials/build-your-own-yeoman-generator--cms-20040)
 
+
+### 常识普及
+
+SVG是使用 XML 来描述二维图形和绘图程序的语言。特点如下：
+
+* SVG 指可伸缩矢量图形 (Scalable Vector Graphics)
+* SVG 用来定义用于网络的基于矢量的图形
+* SVG 使用 XML 格式定义图形
+* SVG 图像在放大或改变尺寸的情况下其图形质量不会有所损失
+* SVG 是万维网联盟的标准
+* SVG 与诸如 DOM 和 XSL 之类的 W3C 标准是一个整体
+
+与其他图像格式相比，使用 SVG 的优势在于：
+
+* SVG 可被非常多的工具读取和修改（比如记事本）
+* SVG 与 JPEG 和 GIF 图像比起来，尺寸更小，且可压缩性更强。
+* SVG 是可伸缩的
+* SVG 图像可在任何的分辨率下被高质量地打印
+* SVG 可在图像质量不下降的情况下被放大
+* SVG 图像中的文本是可选的，同时也是可搜索的（很适合制作地图）
+* SVG 可以与 Java 技术一起运行
+* SVG 是开放的标准
+* SVG 文件是纯粹的 XML
+
+
+
+SVG 的主要竞争者是 Flash。
 
 ## License
 

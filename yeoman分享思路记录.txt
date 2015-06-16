@@ -1,0 +1,279 @@
+写代码的时候我不停的拷问自己：
+
+    写的这行代码一年后的我能一眼就看明白吗？
+    一年后的我看到这段代码能知道写的是什么，解决思路是怎样的吗？
+    一年后的我对整篇代码的组织架构能清晰明了不？
+
+
+
+
+
+
+
+1.个人的目录结构：
+project
+    bower_components 
+    images
+    node_modules
+    precompile
+    scripts
+        controllers
+        models
+        routers
+        views
+        router.js
+    styles
+    templates
+    test
+    app.js
+    index.html
+    bower.json
+    package.json
+    Gruntfile.js
+那么yo怎么处理这件事呢？
+
+使用yo就一个命令搞定：yo todos 或者yo todo,当然本来当你输入这个命令的时候所有的目录结构，依赖包都创建加载完成，但是因为windows这里存在问题，不能自动加载依赖包，需要手动进行npm install & bower install
+但是在linux下不存在这样的问题，进行的非常顺畅
+
+2.选择框架：MVC--ember
+ember要创建雄心勃勃的、能够与本地应用竞争的web应用程序，它借鉴了很多其他优秀开发框架的思想，比如Cocoa、backbone、ruby，所以它是一个综合的、强大的工具
+
+大家常常会拿各种框架去对比，比如backbone、ember、angular(google维护)等
+
+举例:angular和ember表面上有很多相似之处，比如绑定，依赖追踪
+
+Ember.js是一个用于创建web应用的JavaScript MVC 框架，其采用基于字符串的Handlebars模板，支持双向绑定、观察者模式、计算属性（依赖其他属性动态变化）、自动更新模板、路由控制、状态机等。
+Ember.js使用自身扩展的类来创建Ember.js对象、数组、字符串、函数，提供大量方法与属性用于操作。每一个Ember.js应用都使用各自的命名空间，避免冲突。
+
+从各自的官网也可以看出：Ember主要讨论模型、视图和控制器，二Angular则主要是指导大家去学习范围、指示符之类的东西
+
+Angular.js官网上写道“Angular.js是HTML的未来，它被设计用于构建Web应用程序。”我认为当看他们的应用程序时，这种理念是显而易见的——用户界面由HTML标记定义，使用有语义意义的属性（比如data-ng-repeat）来装饰。
+
+而Ember.js使用Handlebars来描述HTML，来展现你的应用程序界面。从美观角度，我们可以谈谈你是更喜欢Handlebars语法（使用类似于{{#each}}的helper），还是喜欢像Angular.js那样通过额外的属性来注释HTML。我个人认为，HTML属性方法有点杂乱，难以阅读。当然，你可以使用其中任何一种方式。
+
+抛开美观不谈，我相信，Ember.js使用基于字符串的模板的方式也为我们带来了一些优势：
+
+    基于字符串的模板可以在服务器上预编译。这样可以减少启动时间，也意味着渲染一个模板可以像调用一个函数一样简单。
+    Angular.js需要你在应用程序启动时遍历整个DOM，你的应用程序越大，启动速度越慢。
+    如果你想在服务器上渲染你的应用程序（用于Google爬虫索引或让首次加载时显示速度更快），Angular.js需要你去启动整个浏览器环境，像PhantomJS，这是资源密集型的。而Handlebars是100％的JavaScript字符串，所有你需要的只是像node.js或Rhino之类的东西。
+    如果你的应用程序变得越来越大，那么字符串模板可以很容易地被分割和懒加载。
+
+此外，Handlebars只让你绑定属性，而Angular.js允许你嵌入实时更新的任意表达式。很多人最初将这个视为Ember.js的局限性，但实际上：
+
+    Ember.js允许非常容易地使用JavaScript来创建可计算属性，它可以包含任意表达式。我们只要求你指定你的依赖，这样在更新时可以智能些。
+    Angular.js在每次有新的变化时，必须重新计算这些表达式，这意味着需要在你的应用程序中绑定更多的元素，速度会变慢。
+    因为Ember.js只允许你绑定属性，我们将可以很容易地利用ECMAScript 6的性能优势，如 Object.observes。由于Angular.js发明了自己的带有 自定义解析器的JavaScript子集，这对于浏览器来说，优化代码变得比较困难。
+
+在一般情况下，Angular.js依靠一种叫做“ 脏检查（dirty checking）”的机制来确定对象是否已进行更改。“脏检查”的方式是，在你扫描每个对象和其所有绑定属性时，比较当前值和之前已知的值。如果它发生了变化，你就需要去更新其绑定。正如你能想到的那样，代码中对象越多，成本将越昂贵。
+
+但Angular.js开发者非常聪明，他们非常仔细地进行了折中。他们的方案是：
+
+    使用“脏检查”，你不需要使用accessors。你可以用person.name = "Bill"来代替person.set('name', "Bill")，就像在Ember.js 或 Backbone.js中的一样。
+    为什么在DOM中你会有这么多的对象？这最终将会成为一个瓶颈的。
+
+Miško Hevery在StackOverflow上介绍了 这种折中方式。他指出，使用“脏检查”，你无法一次有超过2000个绑定对象。
+
+我认为这很好地说明了Ember.js 和 Angular.js理念上的区别。Ember.js 和 Angular.js都力求简单和易用。而Ember.js使你不必担心代码中是否有超过2000个绑定。如果你正在编写大型应用程序，那么你已经解决了你所担心的最大的事情。对于中小规模的应用程序来说，Angular.js同样是伟大的，因为这些应用程序不会触及Angular.js的限制区。
+
+在Ember.js中，我们总是希望利用浏览器和语言中的新功能，以便使事情变得更容易。例如，一旦ES6中 代理对象（proxies）可用，我们不会再要求你使用get()和set()。
+
+
+
+
+
+
+Angular.js是在html中声明数据绑定，程序逻辑放入控制器中。当然也可以扩展html的能力
+
+
+Ember的实现思路很清晰，通过匹配路由查找相应的控制器，控制器调用对应的model和view来渲染展示
+
+
+require进行模块化加载，使用require遇到的问题：
+1>. 在实现完整的todos genenrator的时候，因为它其实涉及的东西很少，就todoController 和todosController两个控制器以及对应的model、router、和需要的view这几个简单的文件，
+所以在入口文件app中将他们全部引入，这没有问题
+define(['todos'], function (Todos) {
+    Todos.deferReadiness();
+    require([
+        'router',
+        'scripts/models/todo',
+        'scripts/controllers/todos_controller',
+        'scripts/controllers/todo_controller',
+        'scripts/views/edit_todo_view'
+    ],
+    function (Router,TodoModel,TodosController,TodoController,EditTodoView) {
+        Router();
+        Todos.Todo =TodoModel;       
+        Todos.TodosController = TodosController;
+        Todos.TodoController = TodoController;
+        EditTodoView();
+        Todos.advanceReadiness();
+    })
+    return Todos;
+})
+但是随着子genenrator的出现，比如我通过子model创建很多的内容(一个子model会对应创建其复数、单数、编辑三个对应的router、controller、model、view)，那么我怎么去管理这些依赖，保证在进行对应的路由的时候，所有的那些东西都已经可用，我本来想着在所有如果文件引入它们，但是后果是什么，require将变得无比庞大，而且特别让人不爽，当然还有一个问题就是每次更新这个文件所做的操作都相当复杂，因为它要遍历scripts文件下面的所有js文件
+
+最后的做法是：根据ember的组织思路，路由匹配-->router-->controller-->model-->view
+也就是说router是一个完整内容的入口，而它依赖于所有它对应的controller，model，view
+
+不管页面有多少个，哪怕是一个，资源映射是使整个应用结构串联起来的最终入口，那么我就在路由映射这里将所有的路由器加载进来，再在对应的路由里去处理他们对应的依赖
+
+define(['ember', '../models/flower_model', '../views/flowers_view', '../controllers/flowers_controller','../views/bound_text_field_view'], function(Ember, Model, View, Controller){
+    Model();
+    View();
+    Controller();
+    Todossubtest.FlowersRoute = Ember.Route.extend({
+      model: function() {
+        return this.get('store').find('flower');
+      }
+    });
+
+    Todossubtest.FlowerRoute = Ember.Route.extend({
+      model: function(model) {
+        return this.get('store').find('flower', model.flower_id);
+      }
+    });
+
+
+    Todossubtest.FlowerEditRoute = Ember.Route.extend({
+      model: function(model) {
+        return this.get('store').find('flower', model.flower_id);
+      }
+    });
+    return Todossubtest;
+})
+
+
+
+define(['scripts/routers/flowers_route','scripts/routers/users_route'], function() {
+    
+    return function() {
+        Todossubtest.Router.map(function () {
+          
+          this.resource('flowers');
+          this.resource('flower', {path: '/flower/:flower_id'});
+          this.resource('flower.edit', { path: '/flower/:flower_id/edit' });
+          
+          this.resource('users');
+          this.resource('user', {path: '/user/:user_id'});
+          this.resource('user.edit', { path: '/user/:user_id/edit' });
+          
+        });        
+    }
+})
+
+define(['ember', 'DS', 'LS'], function (Ember, DS) {
+    var Todossubtest = window.Todossubtest = Ember.Application.create();
+    Todossubtest.Store = DS.Store.extend();
+    Todossubtest.ApplicationAdapter = DS.FixtureAdapter;
+
+    Todossubtest.deferReadiness();
+
+    require(['scripts/router', 'scripts/routers/application_route'],
+    function (Router, ApplicationRoute) {
+        Router();
+        ApplicationRoute();
+        Todossubtest.advanceReadiness();
+    })
+})
+
+2> .
+
+
+
+3.代码架构方式：
+比如controller那样的架构方式，存在的一些潜在的问题：
+1.架构里的东西，有多少可以立即拿出来立即重用，比如评论模块
+2.系统各功能模块是否紧耦合
+3.程序某一部分出错，其他部分能否继续正常工作
+4.各模块的module能否很简单的进行测试
+
+构建大型程序的秘密是：从来不构建大型程序，而是将程序分解成各个小的模块去做，让每个小模块都可测试，可size化，然后集成到程序里。
+
+
+friends
+    friendsController
+    frinedsModel
+    friendsView
+    friendsRouter
+Login
+    loginController
+    loginModel
+    loginView
+    loginRouter
+
+
+
+4.开发调试：
+yeoman进行文件跟踪，只要进行了修改就可以实时在浏览器显示出来，不需要手动打开浏览器刷新，对于进行双屏开发的人尤其友好 
+运行grunt server --force即可，为什么要加--force参数呢，如果在linux下不存在任何问题，它会进行相应的构建，然后自动打开浏览器，有更新自动刷新，但是window下就会报错，也就是open任务有问题，如果不进行--force，那么你的服务器是没有打开的，所以这里要注意，提示watch 的时候手动打开浏览器输入localhost:9000就ok
+
+碰到的问题：require的jshint总是会报define未定义的错，后面的检查别提了，自然不顺畅
+怎样进行jshint是个问题？？？
+
+
+
+5.测试
+使用mocha的测试环境
+很多yo模板提供的测试都是基于phantomjs的,phantomjs作为无界面的浏览器端测试是很方便的，它默认也是运行的mocha测试环境，但是windows端安装始终有问题，在node下是正常的，考虑到更多的是window下的开发，我这里放弃了phantomjs，使用mocha，当然mocha是同时支持浏览器端和服务器端的测试，一般可以在服务器端搞定的测试我不愿意在浏览器端处理，但是遇到的问题是：
+1>. requirejs在node下的兼容问题我一时解决不了，而我的应用程序是用requirejs实现的，所以我还无法在服务器端下面运行mocha测试，目前只实现了浏览器端测试
+
+2>. 在浏览器下的测试也遇到了require加载顺序的问题，由于require的异步加载，在我将app入口文件作为我的test的依赖文件的时候，test中其实是拿不到需要测试的任何对象或者方法的，为了保证执行test之前，依赖都已经加载完成，我采用的做法是：在test中加载app中的依赖
+
+想一下，我为什么不能在app中同步return，也就是讲require中的依赖放到define中(Ember未定义的错)
+
+requirejs.config({
+    baseUrl: '../',
+    paths: {
+        'mocha': 'bower_components/mocha/mocha',
+        'chai': 'bower_components/chai/chai',
+        'sinon': 'bower_components/sinon/lib/sinon',
+        'sinon-chai': 'bower_components/sinon-chai/lib/sinon-chai'
+    }
+})
+define(['app'], function(App) {
+
+    require([
+        'chai',
+        'mocha',
+        'sinon',
+        'sinon-chai',
+        'router',
+        'scripts/models/todo',
+        'scripts/controllers/todos_controller',
+        'scripts/controllers/todo_controller',
+        'scripts/views/edit_todo_view'
+    ],function(Chai) {
+        'use strict';
+
+        mocha.setup('bdd');
+        var should = Chai.should();
+
+        describe('Give it some context', function () {
+            describe('maybe a bit more context here', function () {
+                it('should run here few assertions', function () {
+                    App.should.to.have.property('TodosController');
+                });
+            });
+        });
+
+        mocha.run();
+    })
+})
+
+
+6. 打包发布：
+合并：
+一般的合并任务是使用concat，使用concat比较灵活，由我们自己决定要合并哪些文件，
+
+但是requirejs的合并优化是使用r.js进行处理的，grunt的requirejs任务也是基于r.js实现的，它的局限性是什么呢，它会将有依赖的文件合并到一起，比如在我的应用中依赖了ember、handlebars、jquery，那他就会将这些库和我的应用文件合并，这其实不是我想要的，因为像ember或者handlebars这种库，它都比较大，而且基本上不会频繁的根性版本，是可以一直缓存的文件，而应用文件会频繁更新，那我当然是想将库文件和应用文件分开合并的。
+
+但是如果只是使用concat的话，目前还没有发现一个工具可以自动处理require模块的路径定义的，我们知道require要进行合并的话必须定义模块id，也就是路径，而我们一般开发的时候是推荐不显示定义模块id的，就是为了防止目录改变需要手动修改模块id和依赖模块路径，
+
+我目前的合并是对一种方法，但是并不好
+
+
+
+压缩：grunt有很多任务处理压缩，比如uglify、htmlmin、cssmin、imagemin等
+
+
+部署：其实部署上线的时候我们是希望以后有修改的话，相应的文件及时更新，不会因为缓存的影响，通常的做法是添加版本号或者时间戳，但是现在的问题是我们是通过require加载文件的，哪怕我们可以知道哪些文件进行了更新，也没办法给相应的文件添加更新参数强制浏览器重新加载。目前我能做的值是通过require的配置，给所有的文件添加时间戳或者版本

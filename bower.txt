@@ -1,0 +1,212 @@
+bower使用说明：
+对于window用户要使用bower，必须正确安装msysgit
+
+bower是为web开发量身定做的包管理工具，提供添加新web包、更新web包、删除web包、发布web包、管理包依赖等功能。我们一般认为web包由html+css+javascript构成
+bower的很多思想是借鉴了npm的，npm作为node的包管理工具，非常成熟。比较常用bower命令：
+1.查看依赖包结构：bower list
+├─┬ bootstrap#2.2.2
+│ └── jquery#1.8.3
+├── jquery#1.8.3
+├── requirejs#2.1.2
+└── rgraph2#d8f957ae056a79344807c9cb25fbfe3f4b855aa2
+ 
+bower ls等同于bower list
+bower还提供了一种更体贴的依赖包查看视图:bower ls --paths
+{
+    "bootstrap": [
+        "components/bootstrap/docs/assets/js/bootstrap.js",
+        "components/bootstrap/docs/assets/css/bootstrap.css"
+    ],
+    "jquery": "components/jquery/jquery.js",
+    "requirejs": "components/requirejs",
+    "rgraph2": [
+        "components/rgraph2/lib/raphael-min.js",
+        "components/rgraph2/lib/rgraph2.js"
+    ]
+}
+可以直接将他生成文件，可以用于requirejs,seajs的模块配置文件。
+ 
+2.安装指定版本的库:bower install jquery#1.7.2
+
+3.直接搜索包
+    a). 搜索有bower注册的包：bower search [<name>]
+    b). list所有的包：bower search
+示例：搜索jquery库以及插件
+bower search jquery
+
+4.Bower支持从本地缓存安装packages，如果某个包之前被安装过(不管是哪个项目)，那么bower cache list命令可以列出缓存的包，bower cache clean命令可以清除被缓存的包，bower install <package-name> --offline命令可以安装本地缓存的包
+
+5.Bower的配置
+要配置Bower可以使用JSON在.bowerrc文件中进行bower的相关设置
+你需要在项目根目录下创建bower.json文件，定义它所有的依赖，这跟node的package.json或则Ruby的Gemfile类似
+
+你也可以交互式的创建bower.json文件，使用bower init命令即可。bower.json文件中定义以下几个选项：
+name (required):         | The name of your package.
+version:                 | A semantic version number (see semver).
+main [string|array]:     | The primary endpoints of your package.
+ignore [array]:          | An array of paths not needed in production that you want Bower to ignore when installing your package.
+dependencies [hash]:     | Packages your package depends upon in production.
+devDependencies [hash]:  | Development dependencies.
+private [boolean]:       | Set to true if you want to keep the package private and do not want to register the package in future.
+
+6.Bower删除包：bower uninstall <package-name>
+如果包被依赖，不能删除
+ 
+7.更新包至最新版本: bower update jquery
+
+8.查找包: bower lookup jquery
+
+9.查看包信息：bower info jquery
+
+10.Bower安装包的几种方式：
+    a). 使用bower.json文件中的list的依赖，bower install
+    b). 安装指定package: bower install <package>
+    c). 安装指定版本的package： bower install <package>#<version>
+    d). 使用不同的name和特定的version的package： bower install <name>=<package>#<version>
+11.Bower的使用可以用来编程实现，因Bower provides a powerful, programmatic API. 
+所有的命令可以通过bower.commands对象访问
+
+var bower = require('bower');
+
+bower.commands
+.install(['jquery'], { save: true }, { /* custom config */ })
+.on('end', function (installed) {
+    console.log(installed);
+});
+
+bower.commands
+.search('jquery', {})
+.on('end', function (results) {
+    console.log(results);
+});
+
+Commands可以触发四种类型的事件: log, prompt, end, error.
+
+log is emitted to report the state/progress of the command.
+prompt is emitted whenever the user needs to be prompted.
+error will only be emitted if something goes wrong.
+end is emitted when the command successfully ends.
+当使用Bower进行编程实现时，prompting默认是禁用的，但是你可以在配置中将interactive设为true来使它可用，这也需要你监听prompt事件，并且自己处理prompting。最方便的方式是像下面这样使用inquirer npm module:
+
+var inquirer =  require('inquirer');
+bower.commands
+.install(['jquery'], { save: true }, { interactive: true })
+.on('prompt', function (prompts, callback) {
+    inquirer.prompt(prompts, callback);
+});
+
+12.发布自己的包
+要注册一个新包，需要下面几个条件：
+    a). 必须在当前工作目录下一个有效的manifest jSON
+    b). 你的包需要使用semver Git tags
+    c). 你的包在Git上必须可以访问，记得添加git tags
+    然后使用命令：bower register <my-package-name> <git-endpoint>就ok了
+具体做法：
+5. 用bower提交自己类库
+
+1). 生成bower.json配置文件
+
+
+~ D:\workspace\javascript\nodejs-bower>bower init
+bower existing      The existing bower.json file will be used and filled in
+[?] name: nodejs-bower
+[?] version: 0.0.0
+[?] main file:
+[?] set currently installed components as dependencies? No
+[?] add commonly ignored files to ignore list? Yes
+
+查看生成的文件bower.json
+
+
+{
+  "name": "nodejs-bower",
+  "version": "0.0.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "git://github.com/mbostock/d3.git#~3.2.8",
+    "jquery": "git://github.com/components/jquery.git#~2.0.3"
+  }
+}
+
+2). 在github创建一个资源库：nodejs-bower
+3). 本地工程绑定github
+
+
+~ D:\workspace\javascript\nodejs-bower>git init
+Initialized empty Git repository in D:/workspace/javascript/nodejs-bower/.git/
+
+~ D:\workspace\javascript\nodejs-bower>git add .
+~ D:\workspace\javascript\nodejs-bower>git commit -m "first commit"
+# On branch master
+#
+# Initial commit
+#
+# Untracked files:
+#   (use "git add ..." to include in what will be committed)
+#
+#       app.js
+#       bower.json
+#       bower_components/
+#       node_modules/
+#       package.json
+#       public/
+#       routes/
+#       views/
+nothing added to commit but untracked files present (use "git add" to track)
+
+~ D:\workspace\javascript\nodejs-bower>git remote add origin https://github.com/bsspirit/nodejs-bower
+
+~ D:\workspace\javascript\nodejs-bower>git push -u origin master
+Counting objects: 565, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (516/516), done.
+Writing objects: 100% (565/565), 803.08 KiB, done.
+Total 565 (delta 26), reused 0 (delta 0)
+To https://github.com/bsspirit/nodejs-bower
+ * [new branch]      master -> master
+Branch master set up to track remote branch master from origin.
+
+4). 注册到bower官方类库
+
+
+~ D:\workspace\javascript\nodejs-bower>bower register nodejs-bower git@github.com:bsspirit/nodejs-bower.git
+bower                          convert Converted git@github.com:bsspirit/nodejs-bower.git to git://github.com/bsspirit/n
+odejs-bower.git
+bower nodejs-bower#*           resolve git://github.com/bsspirit/nodejs-bower.git#*
+bower nodejs-bower#*          checkout master
+bower nodejs-bower#*          resolved git://github.com/bsspirit/nodejs-bower.git#af3ceaac07
+Registering a package will make it visible and installable via the registry (https://bower.herokuapp.com), continue? (y/
+n)                    y
+bower nodejs-bower            register git://github.com/bsspirit/nodejs-bower.git
+
+Package nodejs-bower registered successfully!
+All valid semver tags on git://github.com/bsspirit/nodejs-bower.git will be available as versions.
+To publish a new version, you just need release a valid semver tag.
+
+Run bower info nodejs-bower to list the package versions.
+
+5). 查询我们自己的包
+
+
+D:\workspace\javascript\nodejs-bower>bower search nodejs-bower
+Search results:
+
+    nodejs-bower git://github.com/bsspirit/nodejs-bower.git
+
+6). 安装我们自己的包
+
+
+D:\workspace\javascript\nodejs-bower>bower install nodejs-bower
+bower nodejs-bower#*            cached git://github.com/bsspirit/nodejs-bower.git#af3ceaac07
+bower nodejs-bower#*          validate af3ceaac07 against git://github.com/bsspirit/nodejs-bower.git#*
+bower nodejs-bower#*           install nodejs-bower#af3ceaac07
+
+nodejs-bower#af3ceaac07 bower_components\nodejs-bower
+├── d3#3.2.8
+└── jquery#2.0.3
